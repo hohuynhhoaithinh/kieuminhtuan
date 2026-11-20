@@ -3,8 +3,13 @@ const path = require('path');
 
 const BREVO_URL = 'https://api.brevo.com/v3/smtp/email';
 
-// Hoa văn 4 góc: để trống thì dùng ảnh nâu trong public/assets (cần PUBLIC_SITE_URL). Muốn dùng Cloudinary thì dán link .png vào đây.
-const CORNER_URLS = { tl: '', tr: '', bl: '', br: '' };
+// Hoa văn 4 góc: dán link Cloudinary (đuôi .png) vào đây. Để trống thì dùng ảnh trong public/assets (cần PUBLIC_SITE_URL).
+const CORNER_URLS = {
+  tl: 'https://res.cloudinary.com/dzidt15cl/image/upload/v1794993363/corner-tl_tkwjza.png',
+  tr: 'https://res.cloudinary.com/dzidt15cl/image/upload/v1794993363/corner-tr_rcqs0t.png',
+  bl: 'https://res.cloudinary.com/dzidt15cl/image/upload/v1794993363/corner-bl_io8yz9.png',
+  br: 'https://res.cloudinary.com/dzidt15cl/image/upload/v1794993363/corner-br_a19ern.png',
+};
 
 // Ảnh đại diện hiện ở góc trên phải của email xác nhận (Cloudinary tự cắt vuông theo khuôn mặt)
 const AVATAR_URL = 'https://res.cloudinary.com/dzidt15cl/image/upload/v1795082078/tuan_dpb6ee.jpg';
@@ -84,8 +89,8 @@ function buildMessage(data, event, recipient, imageUrl) {
       : `${viHour(start)} – ${viHour(end)} giờ`;
 
   // ---- Giao diện thiệp cổ điển dùng chung cho cả hai email ----
-  const GOLD = '#4A4D52';
-  const CREAM = '#FAFAFA';
+  const GOLD = '#a8873a';
+  const CREAM = '#fbf6ea';
   const CAPS = `font-family:'Cormorant SC','Cormorant Garamond',Georgia,'Times New Roman',serif;text-transform:uppercase;letter-spacing:2.5px;color:${GOLD};font-weight:600`;
   const SCRIPT = `font-family:'Great Vibes','Snell Roundhand','Apple Chancery','Segoe Script','Brush Script MT',cursive;color:${GOLD};font-weight:normal`;
   const SERIF = `font-family:Georgia,'Times New Roman',serif`;
@@ -105,11 +110,6 @@ function buildMessage(data, event, recipient, imageUrl) {
   const avatar = AVATAR_URL.includes('/upload/')
     ? AVATAR_URL.replace('/upload/', '/upload/w_200,h_200,c_fill,g_face,f_jpg,q_auto/')
     : AVATAR_URL;
-  const parkingItems = (Array.isArray(event.parking) ? event.parking : []).filter(Boolean).slice(0, 6);
-  const parkingHtml = parkingItems.length
-    ? `<div style="${CAPS};font-size:12px;line-height:1.7;margin-top:22px">Chỗ gửi xe</div>` +
-      parkingItems.map((p) => `<div style="${SERIF};font-size:13px;line-height:1.6;color:#2A2C30">${text(p)}</div>`).join('')
-    : '';
   const note = text(event.note);
   const phone = text(event.phone);
   const phoneLabel = text(event.phoneLabel, 'Liên hệ');
@@ -126,9 +126,9 @@ function buildMessage(data, event, recipient, imageUrl) {
 
   const shell = ({ topLabel, inner, bottom }) => `<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@500;600&family=Great+Vibes&display=swap" rel="stylesheet">
-</head><body style="margin:0;padding:0;background:#E6E8EB">
-<div style="padding:24px 10px;background:#E6E8EB">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;background:${CREAM};border:1px solid #CfD2D6">
+</head><body style="margin:0;padding:0;background:#ece4d3">
+<div style="padding:24px 10px;background:#ece4d3">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;background:${CREAM};border:1px solid #e2d8bf">
     <tr>
       <td width="120" valign="top" style="width:120px">${corner('tl')}</td>
       <td align="center" valign="middle" style="padding:0 4px;${CAPS};font-size:11px;line-height:1.7">${topLabel}</td>
@@ -143,7 +143,7 @@ function buildMessage(data, event, recipient, imageUrl) {
       <td width="120" valign="bottom" style="width:120px">${corner('br')}</td>
     </tr>
   </table>
-  <p style="margin:14px 0 0;text-align:center;${SERIF};font-size:11px;color:#7A7E85">Email tự động từ thiệp mời</p>
+  <p style="margin:14px 0 0;text-align:center;${SERIF};font-size:11px;color:#8b7d55">Email tự động từ thiệp mời</p>
 </div>
 </body></html>`;
 
@@ -154,8 +154,8 @@ function buildMessage(data, event, recipient, imageUrl) {
   /* ---------- Email báo cho chủ thiệp ---------- */
   if (recipient === 'owner') {
     const row = (label, value, first) => `<tr>
-          <td valign="top" style="padding:10px 12px 10px 0;${CAPS};font-size:11px;width:30%;text-align:left;${first ? '' : 'border-top:1px solid #DADDE1'}">${label}</td>
-          <td valign="top" style="padding:10px 0;${SERIF};font-size:15px;line-height:1.55;color:#2A2C30;text-align:left;word-break:break-word;${first ? '' : 'border-top:1px solid #DADDE1'}">${value}</td>
+          <td valign="top" style="padding:10px 12px 10px 0;${CAPS};font-size:11px;width:30%;text-align:left;${first ? '' : 'border-top:1px solid #e6dcc0'}">${label}</td>
+          <td valign="top" style="padding:10px 0;${SERIF};font-size:15px;line-height:1.55;color:#4d4520;text-align:left;word-break:break-word;${first ? '' : 'border-top:1px solid #e6dcc0'}">${value}</td>
         </tr>`;
     return {
       subject: `[Thiệp mời] ${name} vừa xác nhận tham dự`,
@@ -195,7 +195,6 @@ function buildMessage(data, event, recipient, imageUrl) {
         <div style="${CAPS};font-size:15px;line-height:1.7;margin-top:22px">${venue}</div>
         <div style="${CAPS};font-size:12px;line-height:1.7;font-weight:500">${address}</div>
         ${mapsButton}
-        ${parkingHtml}
         ${note ? `<div style="${SERIF};font-style:italic;color:${GOLD};font-size:14px;line-height:1.6;margin-top:22px">${note}</div>` : ''}
         ${phone ? `<div style="${CAPS};font-size:11px;line-height:1.7;margin-top:14px;font-weight:500">${phoneLabel}: ${phone}</div>` : ''}`,
     }),
